@@ -1,0 +1,50 @@
+{
+  "name": "smata-angular2-ts-devextreme",
+  "version": "1.0.0",
+  "description": "Prototype angular 2 test application for SMATA.",
+  "scripts": {
+    "start": "tsc && concurrently \"tsc -w\" \"lite-server\" ",
+    "e2e": "tsc && concurrently \"http-server -s\" \"protractor protractor.config.js\" --kill-others --success first",
+    "lint": "tslint ./app/**/*.ts -t verbose",
+    "lite": "lite-server",
+    "pree2e": "webdriver-manager update",
+    "test": "tsc && concurrently \"tsc -w\" \"karma start karma.conf.js\"",
+    "test-once": "tsc && karma start karma.conf.js --single-run",
+    "tsc": "tsc",
+    "tsc:w": "tsc -w"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@angular/common": "~2.4.7",
+    "@angular/compiler": "~2.4.7",
+    "@angular/core": "~2.4.7",
+    "@angular/forms": "~2.4.7",
+    "@angular/http": "~2.4.7",
+    "@angular/platform-browser": "~2.4.7",
+    "@angular/platform-browser-dynamic": "~2.4.7",
+    "@angular/router": "~3.4.7",
+    "angular-in-memory-web-api": "~0.2.4",
+    "bootstrap": "^3.3.7",
+    "core-js": "^2.4.1",
+    "devextreme": "^16.2.6-pre-17067",
+    "devextreme-angular": "^16.2.5-rc.1",
+    "devextreme-aspnet-data": "^1.2.4",
+    "rxjs": "5.0.1",
+    "systemjs": "0.19.40",
+    "zone.js": "^0.7.4"
+  },
+  "devDependencies": {
+    "concurrently": "^3.1.0",
+    "lite-server": "^2.2.2",
+    "typescript": "~2.0.10",
+    "canonical-path": "0.0.2",
+    "http-server": "^0.9.0",
+    "tslint": "^3.15.1",
+    "lodash": "^4.16.4",
+    "rimraf": "^2.5.4",
+    "@types/node": "^6.0.46"
+  },
+  "repository": {}
+}

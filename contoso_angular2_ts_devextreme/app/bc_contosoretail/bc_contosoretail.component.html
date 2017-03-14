@@ -1,0 +1,32 @@
+<div class="container" style="width: 80%;">
+    <dx-data-grid [dataSource]="customerOrders" [allowColumnReordering]="true" [allowColumnResizing]="true" [columnAutoWidth]="true">
+        <dxi-column dataField="customerKey"></dxi-column>
+        <dxi-column dataField="product"></dxi-column>
+        <dxi-column dataField="region"></dxi-column>
+        <dxi-column dataField="age"></dxi-column>
+        <dxi-column dataField="productCategoryName"></dxi-column>
+        <dxi-column dataField="amount" format="currency" precision=3></dxi-column>
+
+        <dxo-remote-operations [sorting]="true" [paging]="true" [filtering]="true" [grouping]="true" [groupPaging]="true" [summary]="true"></dxo-remote-operations>
+        <dxo-sorting mode="multiple"></dxo-sorting>
+        <dxo-selection mode="multiple"></dxo-selection>
+        <dxo-group-panel [visible]="true"></dxo-group-panel>
+        <dxo-search-panel [visible]="true" [width]="240" placeholder="Search..."></dxo-search-panel>
+        <dxo-paging [pageSize]="10"></dxo-paging>
+        <dxo-grouping [autoExpandAll]="false"></dxo-grouping>
+        <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[5, 10, 20]" [showInfo]="true"></dxo-pager>
+        <dxo-filter-row [visible]="true"></dxo-filter-row>
+        <dxo-header-filter [visible]="true"></dxo-header-filter>
+        <dxo-column-chooser [enabled]="true"></dxo-column-chooser>
+
+        <dxo-summary>
+            <dxi-total-item column="product" summaryType="count" valueFormat="fixedPoint">
+            </dxi-total-item>
+            <dxi-total-item column="amount" summaryType="sum" valueFormat="currency">
+            </dxi-total-item>
+        </dxo-summary>
+    </dx-data-grid>
+</div>
+<div class="container" style="width: 80%;">
+    <dx-button style="font-size: 10pt;" text="Back" type="default" (onClick)="onBack()"></dx-button>
+</div>
