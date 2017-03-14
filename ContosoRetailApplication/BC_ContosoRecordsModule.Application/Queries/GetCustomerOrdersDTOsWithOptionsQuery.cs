@@ -63,7 +63,7 @@ namespace BC_ContosoRecordsModule.Application.Queries
                             group.items = _mapper.Map<List<CustomerOrdersDTO>>(group.items);
                         }
 
-                        var responseData = new { Items = groupedResponseEntities, TotalCount = totalCount, GroupCount = 0, TotalAmount = totalAmount };
+                        var responseData = new { Items = groupedResponseEntities, TotalCount = totalCount, GroupCount = groupedResponseEntities.Count, TotalAmount = totalAmount };
                     }
                     else
                     {
