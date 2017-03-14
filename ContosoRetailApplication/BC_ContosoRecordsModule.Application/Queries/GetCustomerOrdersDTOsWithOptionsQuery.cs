@@ -63,7 +63,15 @@ namespace BC_ContosoRecordsModule.Application.Queries
                             group.items = _mapper.Map<List<CustomerOrdersDTO>>(group.items);
                         }
 
-                        var responseData = new { Items = groupedResponseEntities, TotalCount = totalCount, GroupCount = groupedResponseEntities.Count, TotalAmount = totalAmount };
+                        var responseData = new 
+                            { 
+                                Items = groupedResponseEntities, 
+                                TotalCount = totalCount, 
+                                GroupCount = groupedResponseEntities.Count, 
+                                TotalAmount = totalAmount 
+                            };
+
+                        return responseData;
                     }
                     else
                     {
@@ -73,7 +81,13 @@ namespace BC_ContosoRecordsModule.Application.Queries
                         // map to dto
                         IEnumerable<CustomerOrdersDTO> dtos = _mapper.Map<IEnumerable<CustomerOrdersDTO>>(responseEntities.ToList());
 
-                        var responseData = new { Items = dtos, TotalCount = totalCount, GroupCount = 0, TotalAmount = totalAmount };
+                        var responseData = new 
+                            { 
+                                Items = dtos, 
+                                TotalCount = totalCount, 
+                                GroupCount = 0, 
+                                TotalAmount = totalAmount 
+                            };
 
                         return responseData;
                     }                    
