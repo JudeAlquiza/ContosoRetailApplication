@@ -30,8 +30,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=5.2.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.5.2.0\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Linq.Dynamic, Version=1.0.6132.35681, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Dynamic.1.0.7\lib\net40\System.Linq.Dynamic.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,13 +52,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DTOs\CustomerOrdersDTO.cs" />
+    <Compile Include="MappingProfile\BCContosoRecordsModuleApplicationMappingProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Queries\GetCustomerOrdersDTOsWithOptionsQuery.cs" />
+    <Compile Include="Queries\Interfaces\IGetCustomerOrdersDTOsWithOptionsQuery.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Commands\" />
-    <Folder Include="DTOs\" />
-    <Folder Include="MappingProfile\" />
-    <Folder Include="Queries\" />
+    <Folder Include="DTOs\Interfaces\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BC_ContosoRecordsModule.Core\BC_ContosoRecordsModule.Core.csproj">
+      <Project>{81940277-FC64-4239-B855-DA633D99DF4A}</Project>
+      <Name>BC_ContosoRecordsModule.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BC_ContosoRecordsModule.DataAccess\BC_ContosoRecordsModule.DataAccess.csproj">
+      <Project>{a4224b18-ecf7-49db-81d9-0699d9151661}</Project>
+      <Name>BC_ContosoRecordsModule.DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ContosoRetail.SharedKernel\ContosoRetail.SharedKernel.csproj">
+      <Project>{87CEB561-FFF1-480B-850F-85D1369408C6}</Project>
+      <Name>ContosoRetail.SharedKernel</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

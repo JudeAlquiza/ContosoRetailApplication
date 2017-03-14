@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 
 namespace ContosoRetail.SharedKernel.DataAccess.Repositories.Interfaces
 {
     public interface INonAsyncNoDeleteRepository<TEntity, TKey>
     {
-        IEnumerable<TEntity> GetAll();
+        IQueryable<TEntity> GetAll();
         TEntity GetById(TKey id);
         TKey Add(TEntity newEntity);
         TEntity Update(TEntity updatedEntity);

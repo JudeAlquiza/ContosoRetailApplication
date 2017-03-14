@@ -30,7 +30,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -52,10 +61,18 @@
       <Project>{81940277-fc64-4239-b855-da633d99df4a}</Project>
       <Name>BC_ContosoRecordsModule.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BC_ContosoRecordsModule.DataModel\BC_ContosoRecordsModule.DataModel.csproj">
+      <Project>{26cc2d7c-e81b-459a-a111-81bbe899065b}</Project>
+      <Name>BC_ContosoRecordsModule.DataModel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ContosoRetail.SharedKernel\ContosoRetail.SharedKernel.csproj">
       <Project>{87ceb561-fff1-480b-850f-85d1369408c6}</Project>
       <Name>ContosoRetail.SharedKernel</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using BC_ContosoRecordsModule.Application.MappingProfile;
+using BC_ContosoRecordsModule.DependencyInjection;
+using ContosoRetail.WebAPI.MappingProfile;
+using ContosoRetail.WebAPI.ModelBinderProviders;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -27,8 +28,22 @@ namespace ContosoRetail.WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Add module services.
+            services.AddContosoRecordsModule();
+
             // Add framework services.
-            services.AddMvc();
+            services.AddSingleton<IMapper>(
+                new Mapper(
+                    new MapperConfiguration(cfg =>
+                    {
+                        cfg.AddProfile<BCContosoRecordsModuleApplicationMappingProfile>();
+                        cfg.AddProfile<ContosoRetailWebAPIMappingProfile>();
+                    })
+                ));
+            services.AddCors();
+            services.AddMvc(
+                config => config.ModelBinderProviders.Insert(0, new DataSourceLoadOptionsBinderProvider())
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,6 +52,8 @@ namespace ContosoRetail.WebAPI
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            app.UseCors(cfg => { cfg.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); });
+            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
             app.UseMvc();
         }
     }

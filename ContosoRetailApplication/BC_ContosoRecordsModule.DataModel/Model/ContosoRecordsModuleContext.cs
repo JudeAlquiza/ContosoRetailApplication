@@ -24,6 +24,7 @@ namespace BC_ContosoRecordsModule.DataModel.Model
             modelBuilder.Configurations.Add(new CustomerOrdersConfiguration());
             modelBuilder.Configurations.Add(new CustomerPromotionConfiguration());
             modelBuilder.Configurations.Add(new OnlineSalesOrderConfiguration());
+            modelBuilder.Configurations.Add(new OnlineSalesOrderDetailsConfiguration());
             modelBuilder.Configurations.Add(new ProductForecastConfiguration());
         }
     }

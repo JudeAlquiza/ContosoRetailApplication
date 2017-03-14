@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "AutoMapper": "5.2.0",
+    "Microsoft.AspNetCore.Diagnostics": "1.0.0",
     "Microsoft.AspNetCore.Mvc": "1.1.2",
     "Microsoft.AspNetCore.Routing": "1.1.1",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.1.1",
@@ -18,7 +20,19 @@
   },
 
   "frameworks": {
-    "net461": { }
+    "net461": {
+      "dependencies": {
+        "BC_ContosoRecordsModule.Application": {
+          "target": "project"
+        },
+        "BC_ContosoRecordsModule.DependencyInjection": {
+          "target": "project"
+        },
+        "ContosoRetail.SharedKernel": {
+          "target": "project"
+        }
+      }
+    }
   },
 
   "buildOptions": {

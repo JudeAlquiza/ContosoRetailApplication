@@ -46,7 +46,7 @@ namespace BC_ContosoRecordsModule.DataModel.Configurations
                 .IsUnicode(false);
 
             Property(e => e.CalendarYear)
-                .HasColumnOrder(5)
+                .HasColumnOrder(4)
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
 
             Property(e => e.FiscalYear)
