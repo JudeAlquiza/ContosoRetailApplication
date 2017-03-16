@@ -22,53 +22,87 @@ export class BC_ContosoRetailComponent {
     constructor(private _router: Router, http: Http) {
         this.customerOrders = new CustomStore({
             load: function (loadOptions: any) {
-                var params = '?';
-
-                if (loadOptions.skip) {
-                    params += 'skip=' + JSON.stringify(loadOptions.skip);
+                
+                console.log(loadOptions);
+                
+                var params: string = '';
+                
+                // skip
+                if (loadOptions.skip){
+                    params += 'skip=' + loadOptions.skip;
                 }
-                else {
+                else{
                     params += 'skip=0';
                 }
 
-                if (loadOptions.take) {
-                    params += '&take=' + JSON.stringify(loadOptions.take);
+                // take
+                if (loadOptions.take){
+                    params += '&take=' + loadOptions.take;
                 }
-                else {
-                    params += '&take=10';
-                }
-
-                if (loadOptions.sort) {
-                    params += '&sort=' + JSON.stringify(loadOptions.sort);
+                else{
+                    params += '&take=0';
                 }
 
-                if (loadOptions.filter) {
+                // filter
+                if (loadOptions.filter){
                     params += '&filter=' + JSON.stringify(loadOptions.filter);
                 }
 
-                if (loadOptions.group) {
+                // sort
+                if (loadOptions.sort){
+                    params += '&sort=' + JSON.stringify(loadOptions.sort);
+                }
+
+                // group
+                if (loadOptions.group){
                     params += '&group=' + JSON.stringify(loadOptions.group);
                 }
 
-                if (loadOptions.requireTotalCount) {
-                    params += '&requireTotalCount=' + JSON.stringify(loadOptions.requireTotalCount);
+                // requireTotalCount
+                if (loadOptions.requireTotalCount){
+                    params += '&requireTotalCount=' + loadOptions.requireTotalCount;
+                }
+                else{
+                    params += '&requireTotalCount=false';
                 }
 
-                if (loadOptions.requireGroupCount) {
-                    params += '&requireGroupCount=' + JSON.stringify(loadOptions.requireGroupCount);
+                // requireGroupCount
+                if (loadOptions.requireGroupCount){
+                    params += '&requireGroupCount=' + loadOptions.requireGroupCount;
+                }
+                else{
+                    params += '&requireGroupCount=false';
                 }
 
-                if (loadOptions.remoteGrouping) {
-                    params += '&remoteGrouping=' + JSON.stringify(loadOptions.remoteGrouping);
+                // searchExpr
+                if (loadOptions.searchExpr){
+                    params += '&searchExpr=' + loadOptions.searchExpr;
                 }
+
+                // searchOperation
+                if (loadOptions.searchOperation){
+                    params += '&searchOperation=' + loadOptions.searchOperation;
+                }
+
+                // searchValue
+                if (loadOptions.searchValue){
+                    params += '&searchValue=' + loadOptions.searchValue;
+                }
+
+                // totalSummary
+                if (loadOptions.totalSummary){
+                    params += '&totalSummary=' + JSON.stringify(loadOptions.totalSummary);
+                }
+
                 console.log(params);
-                return http.get('http://localhost:54555/api/customerorders' + params)
+                
+                return http.get('http://localhost:54555/api/customerorders?' + params)
                     .toPromise()
                     .then(response => {
                         var json = response.json();
-                        console.log(JSON.stringify(json));
+                        console.log(json);
                         return {
-                            data: json.items,
+                            data: json.data,
                             totalCount: json.totalCount,
                             groupCount: json.groupCount,
                             summary: [ json.totalCount, json.totalAmount ]

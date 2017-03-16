@@ -8,9 +8,11 @@
         "bin/Debug/BC_ContosoRecordsModule.Application.dll": {}
       },
       "runtime": {
-        "../packages/AutoMapper.5.2.0/lib/net45/AutoMapper.dll": {},
+        "../packages/AutoMapper.6.0.0/lib/net45/AutoMapper.dll": {},
+        "../packages/DevExtreme.AspNet.Data.1.2.4/lib/net40/DevExtreme.AspNet.Data.dll": {},
         "../packages/Newtonsoft.Json.9.0.1/lib/net45/Newtonsoft.Json.dll": {},
         "../packages/System.Linq.Dynamic.1.0.7/lib/net40/System.Linq.Dynamic.dll": {},
+        "../packages/System.ValueTuple.4.3.0/lib/netstandard1.0/System.ValueTuple.dll": {},
         "bin/Debug/BC_ContosoRecordsModule.Application.dll": {}
       },
       "contentFiles": {

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using BC_ContosoRecordsModule.Application.LoadOptions;
 using BC_ContosoRecordsModule.Application.Queries.Interfaces;
-using ContosoRetail.SharedKernel.ValueObjects.DataRequestOptions.LoadOptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;

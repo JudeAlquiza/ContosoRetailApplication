@@ -1,5 +1,5 @@
-﻿using ContosoRetail.SharedKernel.ValueObjects.DataRequestOptions.LoadOptions;
-using ContosoRetail.WebAPI.RequestParsers;
+﻿using BC_ContosoRecordsModule.Application.LoadOptions;
+using DevExtreme.AspNet.Data.Helpers;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Linq;
 using System.Threading.Tasks;

@@ -1,9 +1,9 @@
-﻿using ContosoRetail.SharedKernel.ValueObjects.DataRequestOptions.LoadOptions;
+﻿using BC_ContosoRecordsModule.Application.LoadOptions;
 
 namespace BC_ContosoRecordsModule.Application.Queries.Interfaces
 {
     public interface IGetCustomerOrdersDTOsWithOptionsQuery
     {
-        dynamic Execute(DataSourceLoadOptionsBase options);
+        dynamic Execute(DataSourceLoadOptions options);
     }
 }

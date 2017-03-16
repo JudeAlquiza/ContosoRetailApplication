@@ -1,4 +1,4 @@
-﻿using ContosoRetail.SharedKernel.ValueObjects.DataRequestOptions.LoadOptions;
+﻿using BC_ContosoRecordsModule.Application.LoadOptions;
 using ContosoRetail.WebAPI.ModelBinders;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 

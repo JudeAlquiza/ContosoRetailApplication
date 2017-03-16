@@ -49,12 +49,6 @@
     <Compile Include="DataAccess\Repositories\Interfaces\INonAsyncNoDeleteRepository.cs" />
     <Compile Include="DataAccess\Repositories\Interfaces\INonAsyncRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ValueObjects\DataRequestOptions\Grouping\Group.cs" />
-    <Compile Include="ValueObjects\DataRequestOptions\Grouping\GroupingInfo.cs" />
-    <Compile Include="ValueObjects\DataRequestOptions\LoadOptions\DataSourceLoadOptions.cs" />
-    <Compile Include="ValueObjects\DataRequestOptions\LoadOptions\DataSourceLoadOptionsBase.cs" />
-    <Compile Include="ValueObjects\DataRequestOptions\Sorting\SortingInfo.cs" />
-    <Compile Include="ValueObjects\DataRequestOptions\Summary\SummaryInfo.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
