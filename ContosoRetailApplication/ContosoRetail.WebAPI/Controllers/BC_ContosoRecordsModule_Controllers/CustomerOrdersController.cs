@@ -23,6 +23,7 @@ namespace ContosoRetail.WebAPI.Controllers.BC_ContosoRecordsModule_Controllers
             _getCustomerOrdersDTOsWithOptionsQuery = getCustomerOrdersDTOsWithOptionsQuery;
             _mapper = mapper;
             _logger = logger;
+
         }
 
         [HttpGet]

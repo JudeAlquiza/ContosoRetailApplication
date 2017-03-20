@@ -22,7 +22,7 @@ export class BC_ContosoRetailComponent {
     constructor(private _router: Router, http: Http) {
         this.customerOrders = new CustomStore({
             load: function (loadOptions: any) {
-                
+                var d = $.Deferred();
                 console.log(loadOptions);
                 
                 var params: string = '';
@@ -96,19 +96,19 @@ export class BC_ContosoRetailComponent {
 
                 console.log(params);
                 
-                return http.get('http://localhost:54555/api/customerorders?' + params)
+                http.get('http://localhost:54555/api/customerorders?' + params)
                     .toPromise()
                     .then(response => {
                         var json = response.json();
                         console.log(json);
-                        return {
-                            data: json.data,
+                        d.resolve(json.data, {                            
                             totalCount: json.totalCount,
                             groupCount: json.groupCount,
                             summary: [ json.totalCount, json.totalAmount ]
-                            };}
-                     )
-                    .catch(error => { throw 'Data Loading Error' });
+                            });
+                    })
+                    .catch(error => { d.reject('Data Loading Error') });
+                    return d.promise();
             }
         });
     }
