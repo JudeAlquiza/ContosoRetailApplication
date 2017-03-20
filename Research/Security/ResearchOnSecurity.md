@@ -32,7 +32,7 @@ a. Inside of our ASP.NET Core project, go to Startup.cs and inside of **Configur
 b. Right click on the ASP.NET Core project and go to properties, then go to Debug, make sure to set enable 
    SSL under web server settings. Note that this will only work if we're using IIS Express as our development web server. This will generate an SSL that we can use to test (the standard SSL port is 443).
 
-   ![Enable SSL in ASP.NET Core project](1.1.1.b.1.jpg)
+   ![Enable SSL in ASP.NET Core project](https://github.com/JudeAlquiza/ContosoRetailApplication/blob/master/Research/Security/1.1.1.b.1.JPG)
 
    Alternatively, we can open launchSettings.json and set the SSL port here.
 
