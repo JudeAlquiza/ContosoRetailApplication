@@ -36,14 +36,14 @@ b. Right click on the ASP.NET Core project and go to properties, then go to Debu
 
    Alternatively, we can open launchSettings.json and set the SSL port here.
 
-   ![Enable SSL in ASP.NET Core project](1.1.1.b.3.jpg)
+   ![Enable SSL in ASP.NET Core project](https://github.com/JudeAlquiza/ContosoRetailApplication/blob/master/Research/Security/1.1.1.b.3.JPG)
 
    Note also that this will generate what is called a **self-signing certificate** which generally is not secure
    and should only be use for development purposes.
 
    When we test this inside of chrome (in this example go to https://localhost:44316/api/[controller]) , we will get a message that says that the certificate we're using is not secure.
 
-   ![Enable SSL in ASP.NET Core project](1.1.1.b.2.jpg)
+   ![Enable SSL in ASP.NET Core project](https://github.com/JudeAlquiza/ContosoRetailApplication/blob/master/Research/Security/1.1.1.b.2.JPG)
 
    Click on '**proceed to localhost**' to see if the API call is still working with SSL configured.
 
@@ -57,7 +57,7 @@ There are at least four options in implementing user authentication in ASP.NET C
 
 a. We'll first make sure that the **Microsoft.AspNetCore.Identity** NuGet package is installed in our ASP.NET Core project.
 
-  ![Using ASP.NET Identity](2.1.1.a.1.jpg)  
+  ![Using ASP.NET Identity](https://github.com/JudeAlquiza/ContosoRetailApplication/blob/master/Research/Security/2.1.1.a.1.JPG)  
 
 b. Go to Startup.cs and inside of **ConfigureServices** method, add and configure the identity          service.
    ``` C#
