@@ -17,7 +17,6 @@ In ASP.NET Core and in web security in general the most common way of making sur
 ### 1.1 Supporting SSL in ASP.NET Core
 
 Inside of our ASP.NET Core project, go to <code>Startup.cs</code> and inside of <code>ConfigureServices()</code> method, pass a lambda to the <code>services.AddMvc()</code> method call as follows. Before doing this make sure that you add a reference to <code>Microsoft.AspNetCore.Mvc</code>.
-
    ``` C#
      public void ConfigureServices(IServiceCollection services)
      {
@@ -33,7 +32,6 @@ Inside of our ASP.NET Core project, go to <code>Startup.cs</code> and inside of 
         // some code here
      }
    ```
-
 Right click on the ASP.NET Core project and go to properties, then go to Debug, make sure to set enable SSL under web server settings. Note that this will only work if we're using IIS Express as our development web server. This will generate an SSL that we can use to test (the standard SSL port is 443).
 
 ![Enable SSL in ASP.NET Core project](https://github.com/JudeAlquiza/ContosoRetailApplication/blob/master/Research/Security/1.1.1.b.1.JPG)
@@ -81,7 +79,6 @@ Here <code>SampleUser</code> is a type that derives from <code>IdentityUser</cod
 Also note that in an actual implementation, the <code>SampleUser</code> and <code>SampleRole</code> class are on a seperate layer, for example on a data layer, registration of dependencies might need to take some other form to accomodate data transfer objects or DTOs and view models.
 
 Still inside of <code>Startup.cs</code> inside of the <code>Configure()</code> method, add the following code to use ASP.NET Identity.
-
    ``` C#
      public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
      {
@@ -98,7 +95,6 @@ the app what resources we want to protect from anonymous access. This is achieve
 
 One way of doing this is at the controller level. In the code snippet below we're allowing anonymous access to the two <code>Get</code> 
 controller actions but not with the <code>Post</code>, <code>Put</code>, and <code>Delete</code> controller actions. These three controller actions need the user accessing the app to be authenticated first before that user can gain access to these resources.
-
    ``` C#
     [Route("api/[controller]")]
     public class BuildingsController : Controller
@@ -138,7 +134,6 @@ controller actions but not with the <code>Post</code>, <code>Put</code>, and <co
     }
    ```
 A much preferred way of doing this is to add the <code>[Authorize]</code> attribute at the controller level. This will make all controller actions protected from anonymous access. If we want to override this for some of the controller actions, we can make use of the <code>[AllowAnonymous]</code> attribute as shown below.
-
    ``` C#
     [Authorize] // User needs to be authenticated to gain access to the resources on this controller.
     [Route("api/[controller]")]
@@ -186,7 +181,6 @@ At this point we can already test it, if we're developing an api instead of a we
 Since we are developing an api, chances are we will not be making these requests in a browser, that is the request can either come from a javascript client or a mobile client, and instead of the application redirecting us to a page, we want specific status codes to be returned instead. That is for users that are not properly authenticated, we want to receive an Http status code of **401 (unauthorized)**, and for authenticated users that don't have access to the resource, we want to receive an Htpp status code of **403 (Forbidden)**.
 
 To make this work, as a final step, we need to go back to the Startup.cs and add the following configuration inside of the <code>ConfigureServices()</code> method.
-
    ``` C#
      public void ConfigureServices(IServiceCollection services)
      {
@@ -240,7 +234,6 @@ Now that we have ASP.NET Identity setup, let's see how cookie authentication wor
 The way cookie authentication works is that when the user logs in, it sends its credentials to the server, the server validates the credentials, authenticates the user and sends a response with the cookie attached to it. This cookie is now included in every subsequent request to the server which is validated by the server, instead of validating the credentials. Cookie authentication is supported by ASP.NET Identity out of the box.
 
 Since we will be needing the username and password from the user, the first thing to do is to create a model that will hold these information, let's call it UserCredentialsModel.cs.
-
    ``` C#
     public class UserCredentialsModel
     {
@@ -251,7 +244,6 @@ Since we will be needing the username and password from the user, the first thin
     }
    ```
 Let's create an API controller that will handle authentication, let's call it AuthController.cs, and let's add a Login action to it.
-
    ``` C#
     [Route("api/[controller]")]
     public class AuthController : Controller
@@ -310,7 +302,6 @@ How these tokens are transported across the wire is the same for cookies, the ma
 There are two steps that is done by the server to implement token authtentication, first is to generate the JWT, and second, validate the JWT.
 
 Before we proceed to the implementation of generating a JWT, we must first know what is the structure of a JWT. A JWT is composed of a header and a payload. The header is consist of the algorithm for the JWT, that is the algorithm used to encrypt the JWT, and the type of token which in most cases is "JWT". A sample of this JWT header is shown below
-
    ``` Javascript 
    // Example of JWT header
    {
@@ -319,7 +310,6 @@ Before we proceed to the implementation of generating a JWT, we must first know 
    }
    ```
 The JWT payload on the other hand consists of some information that the server may want, for instance, the name of the user, roles, a set claims, etc.
-
    ``` Javascript 
    // Example of JWT payload
    {
@@ -332,8 +322,7 @@ That is **JWT = JWT HEADER + JWT PAYLOAD**, this token is issued by the server u
 
 First we'll show how JWTs are generated in ASP.NET Core. 
 
-In the AuthController.cs, let's pass a <code>UserManager</code> and a <code>PasswordHasher</code> in the constructor.
-
+In the <code>AuthController.cs</code>, let's pass in a <code>UserManager</code> and a <code>PasswordHasher</code> to the constructor.
    ``` C#
     [Route("api/[controller]")]
     public class AuthController : Controller
@@ -355,7 +344,6 @@ In the AuthController.cs, let's pass a <code>UserManager</code> and a <code>Pass
         // ... Some code here
     }
    ```
-
 Inside of the AuthController.cs, let's add a <code>CreateToken()</code> action to it. This <code>CreateToken()</code> action needs to retrieve the user using the <code>UserManager</code>, validate the password from the model against this user, and then generate the token. These steps are specified in the code snippet below.
 
    ``` C#
@@ -402,13 +390,13 @@ Inside of the AuthController.cs, let's add a <code>CreateToken()</code> action t
                         
                         // Setup key.
                         // Normally the string literal that is the key should be somewhere else secure, not here in code.
-                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SAMPLESECUREKEY"));
+                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SAMPLESECUREVERYSECURESUPERSECURERANDOMKEY"));
                         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
                         
                         // Create the token.
                         JwtSecurityToken token = new JwtSecurityToken(
-                               issuer: "http://mysite.com",
-                               audience: "http://mysite.com",
+                               issuer: "http://mysuperawesomesite.com",
+                               audience: "http://mysuperawesomesite.com",
                                claims: claims,
                                expires: DateTime.UtcNow.AddMinutes(15),
                                signingCredentials: creds
@@ -431,6 +419,127 @@ Inside of the AuthController.cs, let's add a <code>CreateToken()</code> action t
         }
     }
    ```
+Now the code snippet above needs a bit of cleaning as we have a bunch of hard coded strings in it. We can put all the information we need in <code>appsettings.json</code>. In our appsettings.json, we add the following json data.
+
+   ``` Javascript 
+   "Tokens": {
+      "Key": "SAMPLESECUREVERYSECURESUPERSECURERANDOMKEY",
+      "Issuer": "http://mysuperawesomesite.com",
+      "Audience": "http://mysuperawesomesite.com"
+   }
+   ```
+Now that we have these information in configuration, lets go back to <code>AuthController.cs</code> and pass in a <code>ConfigurationRoot</code> to the constructor.
+   ``` C#
+    [Route("api/[controller]")]
+    public class AuthController : Controller
+    {
+        private SignInManager<SampleUser> _signInManager;
+        private UserManager<SampleUser> _userManager;
+        private IPasswordHasher<SampleUser> _hasher;
+        private IConfigurationRoot _config;
+
+        public AuthController(
+            SignInManager<SampleUser> signInManager,
+            UserManager<SampleUser> userManager,
+            IPasswordHasher<SampleUser> hasher,
+            IConfigurationRoot config)
+        {
+            _signInManager = signInmanager;
+            _userInManager = userInmanager;
+            _hasher = hasher;
+            _config = config;
+        }
+
+        // ... Some code here
+    }
+   ```
+Let's go back to the <code>CreateToken()</code> action and make modification to use configuration instead of hard coded strings.
+These changes are in the setup key and create token process respectively.
+   ``` C#
+        [HttpPost("token")]
+        public aysnc Task<IActionResult> CreateToken([FromBody]UserCredentialsModel model)
+        {
+             try
+             {
+                 if (!ModelState.IsValid) return BadRequest("Failed to login");
+
+                 // retrieve the user.
+                 var user = await _userManager.FindByNameAsync(model.Username); 
+
+                 if (user != null) 
+                 {
+                     // validate the password.
+                     if (_hasher.VerifyHashedPassword(user, user.PasswordHashed, model.Password)
+                            == PasswordVerificationResult.Success) 
+                     {
+                        // setup claims
+                        var claims = new[]
+                        {
+                           new Claim(JwtRegisteredClaimNames.sub, user.Username),
+                           new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                        }
+                        
+                        // setup key
+                        // Normally the string literal that is the key should be somewhere else secure, not here in code.
+                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]);
+                        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                        
+                        // create token
+                        JwtSecurityToken token = new JwtSecurityToken(
+                               issuer: _config["Tokens:Issuer"],
+                               audience: _config["Tokens:Audience"],
+                               claims: claims,
+                               expires: DateTime.UtcNow.AddMinutes(15),
+                               signingCredentials: creds
+                            );
+                            
+                        // return the token to the caller
+                        return Ok(new 
+                        {
+                           token = new JwtSecurityTokenHandler.WriteToken(token)
+                        });
+                     }      
+                 }       
+             }
+             catch (Exception ex)
+             {
+                // some code here to handle exceptions
+             }
+
+             return BadRequest("Failed to login");
+        }
+     ```
+Next we'll proceed with validating these JWTs. First install the <code>Microsoft.AspNetCore.Authentication.JwtBearer</code> package.
+
+Go to <code>Startup.cs</code> and add <code>app.UseJwtBearerAuthentication()</code> inside of the <code>Configure()</code> method as follows
+   ``` C#
+       public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+       {
+          // some code here
+          app.UseIdentity();
+          
+          app.UseJwtBearerAuthentication(new JwtBearerOptions()
+            {
+               AutomaticAuthenticate = true,
+               AutomaticChallenge = true,
+               TokenValidationParameters = new TokenValidationParameters()
+                 {
+                   ValidIssuer = _config["Tokens:Issuer"],
+                   ValidAudience = _config["Tokens:Issuer"],
+                   ValidateIssuerSigningKey = true,
+                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"])),
+                   ValidateLifeTime = true
+                 }
+            });
+          
+          app.UseMvc();
+       }
+   ```
+A couple of things to note here. When adding <code>app.UseJwtBearerAuthentication()</code> we need to pass in a <code>JwtBearerOptions</code> object. In this <code>JwtBearerOptions</code> object, we then need to specify a number of paramters.
+
+- <code>AutomaticAuthenticate = true</code>, this tells ASP.NET that when it finds the token, you'd actually want to authenticate.
+- <code>AutomaticChallenge = true</code>, if the token is invalid or missing, allow to respond as a challenge.
+- <code>TokenValidationParameters = new TokenValidationParameters() { ... }</code>, this is the information that you want the JwtBearerAuthentication middleware to use to validate the token.
 
 ### 2.4 Using OAuth
 
