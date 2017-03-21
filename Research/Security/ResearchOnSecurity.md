@@ -540,8 +540,8 @@ Next we'll proceed with validating these JWTs. First install the <code>Microsoft
 
 Go to <code>Startup.cs</code> and add <code>app.UseJwtBearerAuthentication()</code> inside of the <code>Configure()</code> method as follows
 
-    ``` C#
-       public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+   ``` C#
+    public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
        {
           // some code here
           app.UseIdentity();
@@ -562,8 +562,8 @@ Go to <code>Startup.cs</code> and add <code>app.UseJwtBearerAuthentication()</co
           
           app.UseMvc();
        }
-    ```
-    
+   ```
+
 A couple of things to note here. When adding <code>app.UseJwtBearerAuthentication()</code> we need to pass in a <code>JwtBearerOptions</code> object. In this <code>JwtBearerOptions</code> object, we then need to specify a number of paramters.
 
 <code>AutomaticAuthenticate = true</code>, this tells ASP.NET that when it finds the token, you'd actually want to authenticate.
