@@ -566,10 +566,6 @@ Go to <code>Startup.cs</code> and add <code>app.UseJwtBearerAuthentication()</co
     
 A couple of things to note here. When adding <code>app.UseJwtBearerAuthentication()</code> we need to pass in a <code>JwtBearerOptions</code> object. In this <code>JwtBearerOptions</code> object, we then need to specify a number of paramters.
 
-- <code>AutomaticAuthenticate = true</code>, this tells ASP.NET that when it finds the token, you'd actually want to authenticate.
-- <code>AutomaticChallenge = true</code>, if the token is invalid or missing, allow to respond as a challenge.
-- <code>TokenValidationParameters = new TokenValidationParameters() { ... }</code>, this is the information that you want the JwtBearerAuthentication middleware to use to validate the token.
-
 ### 2.4 Using OAuth
 
 ## 3. Authorization
