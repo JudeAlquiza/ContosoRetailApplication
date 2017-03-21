@@ -16,40 +16,45 @@ In ASP.NET Core and in web security in general the most common way of making sur
 
 ### 1.1 Supporting SSL in ASP.NET Core
 
-a. Inside of our ASP.NET Core project, go to Startup.cs and inside of **ConfigureServices** method,
-   pass a lambda to **services.AddMvc()** as follows
+Before continuing, just want to note that we can use any examples we want, but in this particular discussion, I'm using the [ContosoRetailApplication](https://github.com/JudeAlquiza/ContosoRetailApplication) sample application that is currently in my github repository. We can either clone this or use some other sample app or even our own sample to follow along.
+
+Inside of our ASP.NET Core project, go to <code>Startup.cs</code> and inside of <code>ConfigureServices()</code> method, pass a lambda to the <code>services.AddMvc()</code> method call as follows. Before doing this make sure that you add a reference to <code>Microsoft.AspNetCore.Mvc</code>.
 
    ``` C#
      public void ConfigureServices(IServiceCollection services)
      {
         // some code here
 
-        services.AddMvc(config => config.Filters.Add(new RequireHttpsAttribute()));
+        services.AddMvc(config => 
+              {
+                config.Filters.Add(new RequireHttpsAttribute());
+                
+                // some other code here
+              });
 
         // some code here
      }
    ```
-b. Right click on the ASP.NET Core project and go to properties, then go to Debug, make sure to set enable 
-   SSL under web server settings. Note that this will only work if we're using IIS Express as our development web server. This will generate an SSL that we can use to test (the standard SSL port is 443).
 
-   ![Enable SSL in ASP.NET Core project](https://github.com/JudeAlquiza/ContosoRetailApplication/blob/master/Research/Security/1.1.1.b.1.JPG)
+Right click on the ASP.NET Core project and go to properties, then go to Debug, make sure to set enable SSL under web server settings. Note that this will only work if we're using IIS Express as our development web server. This will generate an SSL that we can use to test (the standard SSL port is 443).
+
+![Enable SSL in ASP.NET Core project](https://github.com/JudeAlquiza/ContosoRetailApplication/blob/master/Research/Security/1.1.1.b.1.JPG)
 
    Alternatively, we can open launchSettings.json and set the SSL port here.
 
    ![Enable SSL in ASP.NET Core project](https://github.com/JudeAlquiza/ContosoRetailApplication/blob/master/Research/Security/1.1.1.b.3.JPG)
 
-   Note also that this will generate what is called a **self-signing certificate** which generally is not secure
-   and should only be use for development purposes.
+   Note also that this will generate what is called a **self-signing certificate** which generally is not secure and should only be use for development purposes.
 
-   When we test this inside of chrome (in this example go to https://localhost:44316/api/[controller]) , we will get a message that says that the certificate we're using is not secure.
+   When we test this inside of chrome (in this example go to https://localhost:44316/api/customerorders, the SSL port may vary depending on what is automatically assigned to you or what your settings are), we will get a message that says that the certificate we're using is not secure.
 
    ![Enable SSL in ASP.NET Core project](https://github.com/JudeAlquiza/ContosoRetailApplication/blob/master/Research/Security/1.1.1.b.2.JPG)
 
-   Click on '**proceed to localhost**' to see if the API call is still working with SSL configured.
+   Click on '**proceed to localhost**' to make sure that the API call is still working with SSL configured.
 
 ## 2. Authentication
 
-There are two major categories of authentication, one is **app authentication**, and the other is **user authentication**. We'll focus only on user authentication in this section.
+There are two major categories of authentication, one is **app authentication**, and the other is **user authentication**. We'll focus only on user authentication in this section and leave the discussion of app authentication some other time.
 
 There are at least four options in implementing user authentication in ASP.NET Core these four options are using **ASP.NET Identity**, **Cookie Authentication**, **Token Authentication**, and using **OAuth**.
 
@@ -59,26 +64,25 @@ a. We'll first make sure that the **Microsoft.AspNetCore.Identity** NuGet packag
 
   ![Using ASP.NET Identity](https://github.com/JudeAlquiza/ContosoRetailApplication/blob/master/Research/Security/2.1.1.a.1.JPG)  
 
-b. Go to Startup.cs and inside of **ConfigureServices** method, add and configure the identity          service.
+b. Go to Startup.cs and inside of **ConfigureServices** method, add and configure the identity service.
    ``` C#
      public void ConfigureServices(IServiceCollection services)
      {
         // some code here
 
         services.AddIdentity<SampleUser,SampleRole>()
-                .AddEntityFrameworkStores<TContext>();
+                .AddEntityFrameworkStores<SampleContext>();
 
         // some code here
      }
    ```
-   Where SampleUser is a type that derives from **IdentityUser**, SampleRole is a type that derives from **IdentityRole**, and TContext is the context where the persistence of objects of type SampleUser and SampleRole are being managed.
+   Where SampleUser is a type that derives from **IdentityUser**, SampleRole is a type that derives from **IdentityRole**, and 
+   SampleContext is the context where the persistence of objects of type SampleUser and SampleRole are being managed.
 
-   Also note that in an actual implementation, if the User and Role class are on a seperate layer, 
-   for example on a data layer, registration of dependencies might need to take some other form to
-   accomodate data transfer objects and view models.
+   Also note that in an actual implementation, if the User and Role class are on a seperate layer, for example on a data layer, 
+   registration of dependencies might need to take some other form to accomodate data transfer objects and view models.
 
-c. Still inside of Startup.cs inside of the **Configure()** method, add the following code to use
-   identity.
+c. Still inside of Startup.cs inside of the **Configure()** method, add the following code to use identity.
 
    ``` C#
      public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
@@ -90,14 +94,15 @@ c. Still inside of Startup.cs inside of the **Configure()** method, add the foll
         app.UseMvc();
      }
    ```
-   It is important that we add the call to use identity before the call to use Mvc because it's the
-   Mvc middleware that we want to protect.
+   It is important that we add the call to use identity before the call to use Mvc because it's the Mvc middleware that we want to 
+   protect.
 
-d. At this point we can already test it only to find that anonymous users can still access the app.      This is because we need to configure the app what resources we want to protect from anonymous         access. This is achieved by adding the **Authorize** attribute
+d. At this point we can already test it only to find that anonymous users can still access the app. This is because we need to configure 
+   the app what resources we want to protect from anonymous access. This is achieved by adding the **Authorize** attribute.
 
-   One way of doing this is at the controller level. In the code snippet below we're allowing 
-   anonymous access to the two **Get** controller actions but not with the **Post**, **Put**, and **Delete** controller actions. These three controller actions need the the user accessing the app
-   to be authenticated first before that use can gain access to these resources.
+   One way of doing this is at the controller level. In the code snippet below we're allowing anonymous access to the two **Get** 
+   controller actions but not with the **Post**, **Put**, and **Delete** controller actions. These three controller actions need the the 
+   user accessing the app to be authenticated first before that use can gain access to these resources.
 
    ``` C#
     [Route("api/[controller]")]
@@ -137,9 +142,9 @@ d. At this point we can already test it only to find that anonymous users can st
         }       
     }
    ```
-   A much preferred way of doing this is to add the **Authorize** attribute at the controller level.
-   This will make all controller actions protected from anonymous access. If we want to override this
-   for some of the controller actions, we can make use of the **AllowAnonymous** attribute as shown below.
+   A much preferred way of doing this is to add the **Authorize** attribute at the controller level. This will make all controller 
+   actions protected from anonymous access. If we want to override this for some of the controller actions, we can make use of the 
+   **AllowAnonymous** attribute as shown below.
 
    ``` C#
     [Authorize] // User needs to be authenticated to gain access to the resources on this controller.
@@ -183,14 +188,11 @@ d. At this point we can already test it only to find that anonymous users can st
         }       
     }
    ```
-e. At this point we can already test it, if we're developing an api instead of a web application, if   we try to access the api in chrome we will be redirected to something like (for this example)        **'https://locahost:44316/Account/Login?ReturnUrl=someUrlHere'**. This might look a bit strange at    first but the way ASP.NET Core works is that right now, MVC is integrated into WebAPI, when we
-   access the WebAPI in a browser it thinks that we want to be redirected to a login page which is
-   not we want. 
+e. At this point we can already test it, if we're developing an api instead of a web application, if   we try to access the api in chrome we will be redirected to something like (for this example) **'https://locahost:44316/Account/Login?ReturnUrl=someUrlHere'**. This might look a bit strange at    first but the way ASP.NET Core works is that right now, MVC is integrated into WebAPI, when we access the WebAPI in a browser it thinks that we want to be redirected to a login page which is not we want. 
 
    Since we are developing an api, chances are we will not be making these requests in a browser, that is the request can either come from a javascript client or a mobile client, and instead of the application redirecting us to a page, we want specific status codes to be returned instead. That is for users that are not properly authenticated, we want to receive an Http status code of **401 (unauthorized)**, and for authenticated users that don't have access to the resource, we want to receive an Htpp status code of **403 (Forbidden)**.
 
-   To make this work, as a final step, we need to go back to the Startup.cs and add the following 
-   configuration inside of the **ConfigureServices()** method.
+   To make this work, as a final step, we need to go back to the Startup.cs and add the following configuration inside of the **ConfigureServices()** method.
 
    ``` C#
      public void ConfigureServices(IServiceCollection services)
@@ -367,7 +369,8 @@ a. In the AuthController.cs, let's pass a **UserManager** and a **PasswordHasher
     }
    ```
 
-b. Inside of the AuthController.cs, let's add a CreateToken action to it. This CreateToken action needs to retrieve the user using the      UserManager, validate the password from the model against this user, and then generate the token.
+b. Inside of the AuthController.cs, let's add a CreateToken action to it. This CreateToken action needs to retrieve the user using the      UserManager, validate the password from the model against this user, and then generate the token. These steps are specified in the 
+   code snippet below.
 
    ``` C#
     [Route("api/[controller]")]
@@ -395,23 +398,28 @@ b. Inside of the AuthController.cs, let's add a CreateToken action to it. This C
              {
                  if (!ModelState.IsValid) return BadRequest("Failed to login");
 
+                 // Retrieve the user.
                  var user = await _userManager.FindByNameAsync(model.Username); 
 
                  if (user != null) 
                  {
+                     // Validate the password.
                      if (_hasher.VerifyHashedPassword(user, user.PasswordHashed, model.Password)
                             == PasswordVerificationResult.Success) 
                      {
+                        // Setup claims.
                         var claims = new[]
                         {
                            new Claim(JwtRegisteredClaimNames.sub, user.Username),
                            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                         }
                         
+                        // Setup key.
                         // Normally the string literal that is the key should be somewhere else secure, not here in code.
                         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SAMPLESECUREKEY"));
                         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
                         
+                        // Create the token.
                         JwtSecurityToken token = new JwtSecurityToken(
                                issuer: "http://mysite.com",
                                audience: "http://mysite.com",
@@ -420,6 +428,7 @@ b. Inside of the AuthController.cs, let's add a CreateToken action to it. This C
                                signingCredentials: creds
                             );
                             
+                        // Return the token to the caller.
                         return Ok(new 
                         {
                            token = new JwtSecurityTokenHandler.WriteToken(token)
