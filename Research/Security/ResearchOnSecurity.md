@@ -540,7 +540,7 @@ Next we'll proceed with validating these JWTs. First install the <code>Microsoft
 
 Go to <code>Startup.cs</code> and add <code>app.UseJwtBearerAuthentication()</code> inside of the <code>Configure()</code> method as follows
 
-   ``` C#
+    ``` C#
        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
        {
           // some code here
