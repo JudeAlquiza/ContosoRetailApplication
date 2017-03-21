@@ -538,34 +538,6 @@ These changes are in the setup key and create token process respectively.
 
 Next we'll proceed with validating these JWTs. First install the <code>Microsoft.AspNetCore.Authentication.JwtBearer</code> package.
 
-Go to <code>Startup.cs</code> and add <code>app.UseJwtBearerAuthentication()</code> inside of the <code>Configure()</code> method as follows
-
-   ``` C#
-       public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-       {
-          // some code here
-          app.UseIdentity();
-          
-          app.UseJwtBearerAuthentication(new JwtBearerOptions()
-            {
-               AutomaticAuthenticate = true,
-               AutomaticChallenge = true,
-               TokenValidationParameters = new TokenValidationParameters()
-                 {
-                   ValidIssuer = _config["Tokens:Issuer"],
-                   ValidAudience = _config["Tokens:Issuer"],
-                   ValidateIssuerSigningKey = true,
-                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"])),
-                   ValidateLifeTime = true
-                 }
-            });
-          
-          app.UseMvc();
-       }
-    ```
-    
-A couple of things to note here. When adding <code>app.UseJwtBearerAuthentication()</code> we need to pass in a <code>JwtBearerOptions</code> object. In this <code>JwtBearerOptions</code> object, we then need to specify a number of paramters.
-
 ### 2.4 Using OAuth
 
 ## 3. Authorization
