@@ -568,9 +568,26 @@ A couple of things to note here. When adding <code>app.UseJwtBearerAuthenticatio
 
 <code>AutomaticAuthenticate = true</code>, this tells ASP.NET that when it finds the token, you'd actually want to authenticate.
 <code>AutomaticChallenge = true</code>, if the token is invalid or missing, allow to respond as a challenge.
-<code>TokenValidationParameters = new TokenValidationParameters() { ... }</code>, this is the information that you want the JwtBearerAuthentication middleware to use to validate the token
+<code>TokenValidationParameters = new TokenValidationParameters() { ... }</code>, this is the information that you want the JwtBearerAuthentication middleware to use to validate the token.
 
-### 2.4 Using OAuth
+To take it a step further, we note that even though this might be a good alternative, the responsibility of securing, that is authenticating and authorizing access to the api, is still in the hands of the application. The ultimate goal is to delegate this responsibility to a seperate application so that they will be independent and any changes on either of them won't have major effects on the other. With this in mind, we turn our attention to what is called a **Secure Token Service** or **STS**.
+
+### 2.4 Using a Secure Token Service or STS
+
+A **secure token service** or **STS** is a dedicated application that handles all the token authentication and authorization features, and is a seperate application in itself.
+
+Before moving on, let's define the following terms first. 
+
+<code>Resource Owner</code> is considered as the user and the one who owns the protected resource.
+<code>Client</code> is the application used by the resource owner to access the protected resource.
+
+The way this works is that when a request for a protected resource is made by the resource owner, instead of the client application (or client) handling the authentication, this responsibility will be delegated to a secure token service instead. 
+
+This secure token service then redirects the client application to a login page where the user enters his/her credentials. T
+
+hese credentials will be sent to the secure token service for authentication. 
+
+After this, the secure token service, will redirect the client application to a consent screen or page where the user or the resource can set what information it wants to allow the client application to use in order to access the resources on the user's behalf.
 
 ## 3. Authorization
 
