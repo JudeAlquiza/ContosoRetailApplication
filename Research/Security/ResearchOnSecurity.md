@@ -576,18 +576,32 @@ To take it a step further, we note that even though this might be a good alterna
 
 A **secure token service** or **STS** is a dedicated application that handles all the token authentication and authorization features, and is a seperate application in itself.
 
+A secure token service has to comply to some sort of standards in order to function properly. There are a number of standards in this regard but the most commonly used now are **OpenIDConnect** and **OAuth2**. **OAuth2** is the main standard for authorization and **OpenIDConnect** sits on top of **OAuth2** and defines the standards for authentication. The succeeding discussion is based on these two very closely related standards.
+
 Before moving on, let's define the following terms first. 
 
 <code>Resource Owner</code> is considered as the user and the one who owns the protected resource.
-<code>Client</code> is the application used by the resource owner to access the protected resource.
+<code>Client</code> is the application used by the resource owner to access the protected resource, this might be an ASP.NET MVC web application, or an Angular2 SPA that's being hosted somewhere else and accessed through a browser.
+<code>Identity Resource</code> contains indentity information and is protected by the secure token service, these contains user and profile information, claims, roles, and other details that is related to identity.
+<code>Api Resource</code> contains data that are exposed by a (web) api and is also protected by the secure token service.
 
-The way this works is that when a request for a protected resource is made by the resource owner, instead of the client application (or client) handling the authentication, this responsibility will be delegated to a secure token service instead. 
+The way this works is that when a request for a protected resource is made by the user (resource owner), instead of the client application (or client) handling the authentication, this responsibility will be delegated to a secure token service instead, in this case were using IdentityServer version 4 which is a widely used secure token service and is maintained by Microsoft. It implements the **OpenIDConnect** standard for authentication which means that it also implements the **OAuth2** standard for authorization.
 
-This secure token service then redirects the client application to a login page where the user enters his/her credentials. T
+Insert image here...
 
-hese credentials will be sent to the secure token service for authentication. 
+This secure token service then redirects the client application to a login page where the user enters his/her credentials. These credentials will be sent to the secure token service for authentication. 
+
+Insert image here...
 
 After this, the secure token service, will redirect the client application to a consent screen or page where the user or the resource can set what information it wants to allow the client application to use in order to access the resources on the user's behalf.
+
+Insert image here...
+
+The secure token service issues two tokens, one is the identity token that is used to access identity resources, and the other one is access token which is used to access api resource.
+
+These two tokens must be attached to request being made depending on what resource the client wants to access in behalf of the user. 
+
+When everything is done, we will be able to access the resources that we need.
 
 ## 3. Authorization
 
