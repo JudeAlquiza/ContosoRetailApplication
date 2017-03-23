@@ -1,7 +1,5 @@
 # ASP.NET Core Security
 
-By: Jude Israeli A. Alquiza
-
 There are three major aspects of ASP.NET Core security that developers should consider, these are **encryption**, **authentication**, and **authorization**.
 
 ## 0. Introduction
