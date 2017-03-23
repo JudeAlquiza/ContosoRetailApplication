@@ -40,13 +40,13 @@ Right click on the ASP.NET Core project and go to properties, then go to Debug, 
 
    Alternatively, we can open launchSettings.json and set the SSL port here.
 
-   ![Enable SSL in ASP.NET Core project](https://github.com/JudeAlquiza/ContosoRetailApplication/blob/master/Research/Security/1.1.1.b.3.JPG)
+![Enable SSL in ASP.NET Core project](https://github.com/JudeAlquiza/ContosoRetailApplication/blob/master/Research/Security/1.1.1.b.3.JPG)
 
    Note also that this will generate what is called a **self-signing certificate** which generally is not secure and should only be use for development purposes.
 
    When we test this inside of chrome (in this example go to https://localhost:44316/api/customerorders, the SSL port may vary depending on what is automatically assigned to you or what your settings are), we will get a message that says that the certificate we're using is not secure.
 
-   ![Enable SSL in ASP.NET Core project](https://github.com/JudeAlquiza/ContosoRetailApplication/blob/master/Research/Security/1.1.1.b.2.JPG)
+![Enable SSL in ASP.NET Core project](https://github.com/JudeAlquiza/ContosoRetailApplication/blob/master/Research/Security/1.1.1.b.2.JPG)
 
    Click on '**proceed to localhost**' to make sure that the API call is still working with SSL configured.
 
@@ -58,11 +58,11 @@ There are two major categories of authentication, one is **app authentication**,
 
 ### 2.1 Setting up and using ASP.NET Identity
 
-First make sure that the **Microsoft.AspNetCore.Identity** NuGet package is installed in our ASP.NET Core project.
+First make sure that the <code>Microsoft.AspNetCore.Identity</code> NuGet package is installed in our ASP.NET Core project.
 
   ![Using ASP.NET Identity](https://github.com/JudeAlquiza/ContosoRetailApplication/blob/master/Research/Security/2.1.1.a.1.JPG)  
 
-Go to Startup.cs and inside of **ConfigureServices** method, add and configure the identity service.
+Go to Startup.cs and inside of <code>ConfigureServices</code> method, add and configure the identity service.
 
    ``` C#
      public void ConfigureServices(IServiceCollection services)
@@ -419,9 +419,11 @@ The JWT payload on the other hand consists of some information that the server m
    }
    ```
    
-That is **JWT = JWT HEADER + JWT PAYLOAD**, this token is issued by the server upon when a user is successfully authenticated. It gets encrypted first in a special way before it gets dropped to the response that is then sent back to the client. The token that is sent back then gets attached to all subsequent request and gets validated by the server.
+That is **JWT = JWT HEADER + JWT PAYLOAD**, this token is issued by the server when a user is successfully authenticated. It gets encrypted first hashed using the algorithm specified in the JWT header, then it gets dropped to the response that is then sent back to the client. The token that is sent back then gets attached to all subsequent request and gets validated by the server.
 
 First we'll show how JWTs are generated in ASP.NET Core. 
+
+#### 2.3.1 Generating JSON web tokens
 
 In the <code>AuthController.cs</code>, let's pass in a <code>UserManager</code> and a <code>PasswordHasher</code> to the constructor.
 
@@ -617,7 +619,17 @@ These changes are in the setup key and create token process respectively.
         }  
    ```
 
-Next we'll proceed with validating these JWTs. First install the <code>Microsoft.AspNetCore.Authentication.JwtBearer</code> package.
+Once all of these are done, we can try to test it by authenticating first and then navigating throught the <code>"token"</code> endpoint to see what a JWT looks like. You should see something like this.
+
+![Using JWTs](https://github.com/JudeAlquiza/ContosoRetailApplication/blob/master/Research/Security/2.3.1.JPG)
+
+Now this JWT should be embedded in the request as an <code>"Authorization"</code> header with a value prefixed by the word <code>"bearer"</code> that is the value should be <code>bearer [your JWT]</code>. This header should be in every request to the api.
+
+Next we'll proceed with validating these JWTs. 
+
+#### 2.3.2 Validating JSON web tokens
+
+First install the <code>Microsoft.AspNetCore.Authentication.JwtBearer</code> package.
 
 Go to <code>Startup.cs</code> and add <code>app.UseJwtBearerAuthentication()</code> inside of the <code>Configure()</code> method as follows
 
@@ -651,9 +663,162 @@ A couple of things to note here. When adding <code>app.UseJwtBearerAuthenticatio
 <code>AutomaticChallenge = true</code>, if the token is invalid or missing, allow to respond as a challenge.
 <code>TokenValidationParameters = new TokenValidationParameters() { ... }</code>, this is the information that you want the JwtBearerAuthentication middleware to use to validate the token.
 
-To take it a step further, we note that even though this might be a good alternative, the responsibility of securing, that is authenticating and authorizing access to the api, is still in the hands of the application. The ultimate goal is to delegate this responsibility to a seperate application so that they will be independent and any changes on either of them won't have major effects on the other. With this in mind, we turn our attention to what is called a **Secure Token Service** or **STS**.
+#### 2.3.3 Claims Based Authentication using JSON Web Tokens
+
+Let's go back to the <code>CreateToken()</code> action and make modification to add more claims to the array of claims. We'll also add the user claims obtained via the user manager to our array of claims.
+
+   ``` C#
+    [HttpPost("token")]
+        public aysnc Task<IActionResult> CreateToken([FromBody]UserCredentialsModel model)
+        {
+             try
+             {
+                 if (!ModelState.IsValid) return BadRequest("Failed to login");
+
+                 // retrieve the user.
+                 var user = await _userManager.FindByNameAsync(model.Username); 
+
+                 if (user != null) 
+                 {
+                     // validate the password.
+                     if (_hasher.VerifyHashedPassword(user, user.PasswordHashed, model.Password)
+                            == PasswordVerificationResult.Success) 
+                     {
+                        // setup claims
+                        // get user claims
+                        var userClaims = await _userManager.GetClaimsAsync(user);
+                        
+                        // our own claims
+                        var claims = new[]
+                        {
+                           new Claim(JwtRegisteredClaimNames.sub, user.Username),
+                           new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                           
+                           // additional claims
+                           new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName)
+                           new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName)
+                           new Claim(JwtRegisteredClaimNames.Email, user.Email)
+                        }.
+                        // add the user claims
+                        Union(userClaims);
+                        
+                        // setup key
+                        // some code here ...
+                        
+                        // create token
+                        // some code here ...
+                            
+                        // return the token to the caller
+                        return Ok(new 
+                        {
+                           token = new JwtSecurityTokenHandler.WriteToken(token)
+                        });
+                     }      
+                 }       
+             }
+             catch (Exception ex)
+             {
+                // some code here to handle exceptions
+             }
+
+             return BadRequest("Failed to login");
+        }      
+   ```
+
+Now if we try to generate the JWT you'll notice that it's a bit bigger because the claims that we added.
+
+![Using JWTs](https://github.com/JudeAlquiza/ContosoRetailApplication/blob/master/Research/Security/2.3.3.1.JPG)
+
+In <code>Startup.cs</code> inside of the <code>ConfigureServices()</code> method, let's delete the existing policy add some additional policies.
+
+   ``` C#
+     public void ConfigureServices(IServiceCollection services)
+     {
+        // some code here
+
+        sservices.AddAuthorization(options =>
+        {
+           options.AddPolicy("SuperUser", policy => 
+                   policy.RequireClaim("SuperUser", "true"));
+           options.AddPolicy("Manager", policy => 
+                   policy.RequireClaim("Manager", "true"));
+           options.AddPolicy("Accounting", policy => 
+                   policy.RequireClaim("Accounting", "true"));       
+           options.AddPolicy("CanCreateBuilding", policy => 
+                   policy.RequireClaim("CanCreateBuilding", "true"));
+           options.AddPolicy("CanSeeBuildingList", policy => 
+                   policy.RequireClaim("CanSeeBuildingList", "true"));
+           options.AddPolicy("CanSeeBuilding", policy => 
+                   policy.RequireClaim("CanSeeBuilding", "true"));
+           options.AddPolicy("CanUpdateBuilding", policy => 
+                   policy.RequireClaim("CanUpdateBuilding", "true"));
+           options.AddPolicy("CanDeleteBuilding", policy => 
+                   policy.RequireClaim("CanDeleteBuilding", "true"));
+           );
+        });
+
+        // some code here
+     }
+   ```
+
+I've created a new controller called <code>BuildingsController</code> to demonstrate how can we control access our resource using claims.
+
+   ``` C#
+    // only Managers can access this controller
+    [Authorize(Policy="Manager")]
+    [Route("api/[controller]")]
+    public class BuildingsController : Controller
+    {     
+        // only Managers that fall under the policy "CanSeeBuildingList" 
+        // can access this controller action
+        [Authorize(Policy="CanSeeBuildingList")] 
+        [HttpGet]
+        public IActionResult Get()
+        {
+            // some code here       
+        }
+
+        // only Managers that fall under the policy "CanSeeBuilding" 
+        // can access this controller action
+        [Authorize(Policy="CanSeeBuilding")] 
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            // some code here
+        }
+        
+        // only Managers that fall under the policy "CanCreateBuilding" 
+        // can access this controller action
+        [Authorize(Policy="CanCreateBuilding")] 
+        [HttpPost]
+        public IActionResult Post([FromBody]SomeViewModel vm)
+        {
+            // some code here
+        }
+       
+        // only Managers that fall under the policy "CanUpdateBuilding" 
+        // can access this controller action
+        [Authorize(Policy="CanUpdateBuilding")] 
+        [HttpPut]
+        public IActionResult Put([FromBody]SomeViewModel vm)
+        {
+            // some code here
+        }
+
+        // only Managers that fall under the policy "CanDeleteBuilding" 
+        // can access this controller action
+        [Authorize(Policy="CanDeleteBuilding")] 
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            // some code here
+        }       
+    }
+   ```
 
 ### 2.4 Using a Secure Token Service or STS
+
+To take it a step further, we note that using JWTs might be a good alternative, the responsibility of securing, that is authenticating and authorizing access to the api is still in the hands of the application. The ultimate goal is to delegate this responsibility to a seperate application so that they will be independent and any changes on either of them won't have major effects on the other. With this in mind, we turn our attention to what is called a **Secure Token Service** or **STS**.
 
 A **secure token service** or **STS** is a dedicated application that handles all the token authentication and authorization features, and is a seperate application in itself.
 
