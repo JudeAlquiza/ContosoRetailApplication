@@ -53,9 +53,7 @@
     <Compile Include="Repositories\CustomerOrdersRepository.cs" />
     <Compile Include="Repositories\Interfaces\ICustomerOrdersRepository.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Repositories\Foundational\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\BC_ContosoRecordsModule.Core\BC_ContosoRecordsModule.Core.csproj">
       <Project>{81940277-fc64-4239-b855-da633d99df4a}</Project>

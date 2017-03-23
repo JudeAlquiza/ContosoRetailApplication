@@ -1,5 +1,4 @@
-﻿
-using BC_ContosoRecordsModule.Core.Entities;
+﻿using BC_ContosoRecordsModule.Core.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.ModelConfiguration;
 

@@ -3,7 +3,7 @@ using BC_ContosoRecordsModule.Application.LoadOptions;
 using BC_ContosoRecordsModule.Application.Queries.Interfaces;
 using BC_ContosoRecordsModule.Core.Entities;
 using BC_ContosoRecordsModule.DataAccess.Repositories.Interfaces;
-using DevExtreme.AspNet.Data;
+using ContosoRetail.SharedKernel.DataAccess.DataLoader;
 using System.Linq;
 
 namespace BC_ContosoRecordsModule.Application.Queries

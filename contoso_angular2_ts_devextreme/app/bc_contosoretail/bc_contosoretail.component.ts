@@ -23,7 +23,6 @@ export class BC_ContosoRetailComponent {
         this.customerOrders = new CustomStore({
             load: function (loadOptions: any) {
                 var d = $.Deferred();
-                console.log(loadOptions);
                 
                 var params: string = '';
                 
@@ -94,8 +93,6 @@ export class BC_ContosoRetailComponent {
                     params += '&totalSummary=' + JSON.stringify(loadOptions.totalSummary);
                 }
 
-                console.log(params);
-                
                 http.get('http://localhost:54555/api/customerorders?' + params)
                     .toPromise()
                     .then(response => {
