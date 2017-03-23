@@ -50,15 +50,13 @@ Right click on the ASP.NET Core project and go to properties, then go to Debug, 
 
    Click on '**proceed to localhost**' to make sure that the API call is still working with SSL configured.
 
-## 2. Authentication
+## 2. Authentication and Authorization
 
 There are two major categories of authentication, one is **app authentication**, and the other is **user authentication**. We'll focus only on user authentication in this section and leave the discussion of app authentication some other time.
 
 **ASP.NET Identity** is ASP.NET Core's Identity API that manages user accounts, logins, passwords, roles, claims, and a whole lot more that has to do with authentication and authorization. It supports both cookie authentication and token authentication.
 
-The first thing that we need to do is setup ASP.NET Core to use ASP.NET Identity. 
-
-### 2.1 Setting up ASP.NET Identity
+### 2.1 Setting up and using ASP.NET Identity
 
 First make sure that the **Microsoft.AspNetCore.Identity** NuGet package is installed in our ASP.NET Core project.
 
@@ -71,16 +69,16 @@ Go to Startup.cs and inside of **ConfigureServices** method, add and configure t
      {
         // some code here
 
-        services.AddIdentity<SampleUser,SampleRole>()
-                .AddEntityFrameworkStores<SampleContext>();
+        services.AddIdentity<TestUser,TestRole>()
+                .AddEntityFrameworkStores<TestContext>();
 
         // some code here
      }
    ```
    
-Here <code>SampleUser</code> is a type that derives from <code>IdentityUser</code>, <code>SampleRole</code> is a type that derives from <code>IdentityRole</code>, and <code>SampleContext</code> is the context where the persistence of objects of type <code>SampleUser</code> and <code>SampleRole</code> are being managed.
+Here <code>TestUser</code> is a type that derives from <code>IdentityUser</code>, <code>TestRole</code> is a type that derives from <code>IdentityRole</code>, and <code>TestContext</code> is the context where the persistence of objects of type <code>TestUser</code> and <code>TestRole</code> are being managed.
 
-Also note that in an actual implementation, the <code>SampleUser</code> and <code>SampleRole</code> class are on a seperate layer, for example on a data layer, registration of dependencies might need to take some other form to accomodate data transfer objects or DTOs and view models.
+Also note that in an actual implementation, the <code>TestUser</code> and <code>TestRole</code> class are on a seperate layer, for example on a data layer, registration of dependencies might need to take some other form to accomodate data transfer objects or DTOs and view models.
 
 Still inside of <code>Startup.cs</code> inside of the <code>Configure()</code> method, add the following code to use ASP.NET Identity.
    
@@ -104,7 +102,7 @@ controller actions but not with the <code>Post</code>, <code>Put</code>, and <co
    
    ``` C#
     [Route("api/[controller]")]
-    public class BuildingsController : Controller
+    public class HomeController : Controller
     {       
         [HttpGet]
         public IActionResult Get()
@@ -146,7 +144,7 @@ A much preferred way of doing this is to add the <code>[Authorize]</code> attrib
    ``` C#
     [Authorize] // User needs to be authenticated to gain access to the resources on this controller.
     [Route("api/[controller]")]
-    public class SomeController : Controller
+    public class HomeController : Controller
     {     
         // This will override the Authorize attribute for this controller action, and allow anonymous
         // access. 
@@ -197,8 +195,8 @@ To make this work, as a final step, we need to go back to the Startup.cs and add
      {
         // some code here
 
-        services.AddIdentity<TUser,TRole>()
-                .AddEntityFrameworkStores<TContext>();
+        services.AddIdentity<TestUser,TestRole>()
+                .AddEntityFrameworkStores<TestContext>();
 
         services.Configure<IdentityOptions>(config =>
         {
@@ -238,8 +236,91 @@ To make this work, as a final step, we need to go back to the Startup.cs and add
         // some code here
      }
    ```
+
+#### 2.1.1 Role Based Authentication with ASP.NET Identity
+
+For example the following code would limit access to any actions on the <code>HomeController</code> to users who are a member of the <code>Administrator</code> group.
+
+   ``` C#
+    [Authorize(Roles = "Administrator")]
+    public class HomeController : Controller
+    {
+    }
+   ```
+
+We can also specify multiple roles that has access to <code>HomeController</code>. In the code snippet below only the <code>HumanResources</code> and <code>Finance</code> groups have access to <code>HomeController</code>
+
+   ``` C#
+     [Authorize(Roles = "HumanResources,Finance")]
+     public class HomeController : Controller
+     {
+     }
+   ```
+
+Multiple authorize with role attributes would mean that an accessing user has to have those roles in order to gain access. In the code snippet below, the user has to have both <code>Managers</code> and <code>Finance</code> roles in order to gain access to the <code>HomeController</code>
+
+   ``` C#
+     [Authorize(Roles = "Managers")]
+     [Authorize(Roles = "Finance")]
+     public class HomeController : Controller
+     {
+     }
+   ```
+
+#### 2.1.2 Claims Based Authentication with ASP.NET Identity
+
+Go to <code>Startup.cs</code> and inside of <code>ConfigureServices()</code> method, lets define a new authorization policy. This new authorization policy called the <code>EmployeeOnly</code> policy. Any users with a value for the <code>"EmployeeNumber"</code> claim will fall under this policy.
+
+   ``` C#
+     public void ConfigureServices(IServiceCollection services)
+     {
+        // some code here
+
+        sservices.AddAuthorization(options =>
+        {
+           options.AddPolicy("EmployeeOnly", policy => policy.RequireClaim("EmployeeNumber"));
+        });
+
+        // some code here
+     }
+   ```
+
+We can use this new policy in our <code>HomeController</code> as follows
+
+   ``` C#
+     [Authorize(Policy = "EmployeeOnly")]
+     public class HomeController : Controller
+     {
+     }
+   ```
+
+#### 2.1.3 User and Role Based Authentication with ASP.NET Identity
+
+One way to achieve both user and role based authentication at the same time, is that first we need to make sure that a <code>"username"</code> claim is added on whenever a user registers. Then again in the <code>Startup.cs</code> and inside of <code>ConfigureServices()</code> method, lets define a new authorization policy, this new authorization policy is called the <code>AdminJude</code> policy. Any users with a value <code>"Jude"</code> for the <code>"username"</code> claim and has an admin role will fall under this policy.
+
+   ``` C#
+     public void ConfigureServices(IServiceCollection services)
+     {
+        // some code here
+
+        sservices.AddAuthorization(options =>
+        {
+           options.AddPolicy("AdminJude", policy => policy.RequireClaim("username", "Jude").RequireRole("Admin"));
+        });
+
+        // some code here
+     }
+   ```
+We can use this new policy in our <code>HomeController</code> as follows. In this case only users with username of "Jude" and has an admin role will be able to access the controller class.
+
+   ``` C#
+     [Authorize(Policy = "AdminJude")]
+     public class HomeController : Controller
+     {
+     }
+   ```
    
-Now that we have ASP.NET Identity setup, let's see how cookie authentication works with ASP.NET Identity.
+In the next section, let's see how cookie authentication works with ASP.NET Identity.
 
 ### 2.2 Using Cookie Authentication
 
@@ -296,7 +377,7 @@ Let's create an API controller that will handle authentication, let's call it Au
     }
    ```
    
-Note that in order for us to test this, we must have at least one user saved in the database that we can use.
+Note that in order for us to test this, we must have at least one user saved in the database that we can use. Once all of this is setup we the rest would be the same as with the discussion above for ASP.NET Identity.
 
 If we try login with an Http POST to the Login action of this controller, we'll get a response with a cookie attached to it. This 
 cookie will be attached to each succeeding request the user makes and doesn't need to login. This cookie is valid only with the 
@@ -576,18 +657,29 @@ To take it a step further, we note that even though this might be a good alterna
 
 A **secure token service** or **STS** is a dedicated application that handles all the token authentication and authorization features, and is a seperate application in itself.
 
+A secure token service has to comply to some sort of standards in order to function properly. There are a number of standards in this regard but the most commonly used now are **OpenIDConnect** and **OAuth2**. **OAuth2** is the main standard for authorization and **OpenIDConnect** sits on top of **OAuth2** and defines the standards for authentication. The succeeding discussion is based on these two very closely related standards.
+
 Before moving on, let's define the following terms first. 
 
 <code>Resource Owner</code> is considered as the user and the one who owns the protected resource.
-<code>Client</code> is the application used by the resource owner to access the protected resource.
+<code>Client</code> is the application used by the resource owner to access the protected resource, this might be an ASP.NET MVC web application, or an Angular2 SPA that's being hosted somewhere else and accessed through a browser.
+<code>Identity Resource</code> contains indentity information and is protected by the secure token service, these contains user and profile information, claims, roles, and other details that is related to identity.
+<code>Api Resource</code> contains data that are exposed by a (web) api and is also protected by the secure token service.
 
-The way this works is that when a request for a protected resource is made by the resource owner, instead of the client application (or client) handling the authentication, this responsibility will be delegated to a secure token service instead. 
+The way this works is that when a request for a protected resource is made by the user (resource owner), instead of the client application (or client) handling the authentication, this responsibility will be delegated to a secure token service instead, in this case were using IdentityServer version 4 which is a widely used secure token service and is maintained by Microsoft. It implements the **OpenIDConnect** standard for authentication which means that it also implements the **OAuth2** standard for authorization.
 
-This secure token service then redirects the client application to a login page where the user enters his/her credentials. T
+![Using Security Token Service](https://github.com/JudeAlquiza/ContosoRetailApplication/blob/master/Research/Security/2.4.1.JPG) 
 
-hese credentials will be sent to the secure token service for authentication. 
+This secure token service then redirects the client application to a login page where the user enters his/her credentials. These credentials will be sent to the secure token service for authentication. 
+
+![Using Security Token Service](https://github.com/JudeAlquiza/ContosoRetailApplication/blob/master/Research/Security/2.4.2.JPG) 
 
 After this, the secure token service, will redirect the client application to a consent screen or page where the user or the resource can set what information it wants to allow the client application to use in order to access the resources on the user's behalf.
 
-## 3. Authorization
+![Using Security Token Service](https://github.com/JudeAlquiza/ContosoRetailApplication/blob/master/Research/Security/2.4.3.JPG) 
 
+The secure token service issues two tokens, one is the identity token that is used to access identity resources, and the other one is access token which is used to access api resource.
+
+These two tokens must be attached to request being made depending on what resource the client wants to access in behalf of the user. 
+
+When everything is done, we will be able to access the resources that we need.
