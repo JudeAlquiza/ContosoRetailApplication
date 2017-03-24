@@ -186,7 +186,7 @@ A much preferred way of doing this is to add the <code>[Authorize]</code> attrib
    
 At this point we can already test it, if we're developing an api instead of a web application, if we try to access the api in chrome we will be redirected to something like (for this example) **'https://locahost:44316/Account/Login?ReturnUrl=someUrlHere'**. This might look a bit strange at first but the way ASP.NET Core works is that right now, MVC is integrated into WebAPI, when we access the WebAPI in a browser it thinks that we want to be redirected to a login page which is not we want. 
 
-Since we are developing an api, chances are we will not be making these requests in a browser, that is the request can either come from a javascript client or a mobile client, and instead of the application redirecting us to a page, we want specific status codes to be returned instead. That is for users that are not properly authenticated, we want to receive an Http status code of **401 (unauthorized)**, and for authenticated users that don't have access to the resource, we want to receive an Htpp status code of **403 (Forbidden)**.
+Since we are developing an api, chances are we will not be making these requests in a browser, that is the request can either come from a javascript client or a mobile client, and instead of the application redirecting us to a page, we want specific status codes to be returned instead. That is for users that are not properly authenticated, we want to receive an Http status code of **401 (unauthorized)**, and for authenticated users that don't have access to the resource, we want to receive an Http status code of **403 (Forbidden)**.
 
 To make this work, as a final step, we need to go back to the Startup.cs and add the following configuration inside of the <code>ConfigureServices()</code> method.
   
@@ -237,7 +237,7 @@ To make this work, as a final step, we need to go back to the Startup.cs and add
      }
    ```
 
-#### 2.1.1 Role Based Authentication with ASP.NET Identity
+#### 2.1.1 Role Based Authorization with ASP.NET Identity
 
 For example the following code would limit access to any actions on the <code>HomeController</code> to users who are a member of the <code>Administrator</code> group.
 
@@ -267,7 +267,7 @@ Multiple authorize with role attributes would mean that an accessing user has to
      }
    ```
 
-#### 2.1.2 Claims Based Authentication with ASP.NET Identity
+#### 2.1.2 Claims Based Authorization with ASP.NET Identity
 
 Go to <code>Startup.cs</code> and inside of <code>ConfigureServices()</code> method, lets define a new authorization policy. This new authorization policy called the <code>EmployeeOnly</code> policy. Any users with a value for the <code>"EmployeeNumber"</code> claim will fall under this policy.
 
@@ -294,7 +294,7 @@ We can use this new policy in our <code>HomeController</code> as follows
      }
    ```
 
-#### 2.1.3 User and Role Based Authentication with ASP.NET Identity
+#### 2.1.3 User and Role Based Authorization with ASP.NET Identity
 
 One way to achieve both user and role based authentication at the same time, is that first we need to make sure that a <code>"username"</code> claim is added on whenever a user registers. Then again in the <code>Startup.cs</code> and inside of <code>ConfigureServices()</code> method, lets define a new authorization policy, this new authorization policy is called the <code>AdminJude</code> policy. Any users with a value <code>"Jude"</code> for the <code>"username"</code> claim and has an admin role will fall under this policy.
 
@@ -663,7 +663,7 @@ A couple of things to note here. When adding <code>app.UseJwtBearerAuthenticatio
 <code>AutomaticChallenge = true</code>, if the token is invalid or missing, allow to respond as a challenge.
 <code>TokenValidationParameters = new TokenValidationParameters() { ... }</code>, this is the information that you want the JwtBearerAuthentication middleware to use to validate the token.
 
-#### 2.3.3 Claims Based Authentication using JSON Web Tokens
+#### 2.3.3 Claims Based Authorization using JSON Web Tokens
 
 Let's go back to the <code>CreateToken()</code> action and make modification to add more claims to the array of claims. We'll also add the user claims obtained via the user manager to our array of claims.
 
@@ -818,7 +818,7 @@ I've created a new controller called <code>BuildingsController</code> to demonst
 
 ### 2.4 Using a Secure Token Service or STS
 
-To take it a step further, we note that using JWTs might be a good alternative, the responsibility of securing, that is authenticating and authorizing access to the api is still in the hands of the application. The ultimate goal is to delegate this responsibility to a seperate application so that they will be independent and any changes on either of them won't have major effects on the other. With this in mind, we turn our attention to what is called a **Secure Token Service** or **STS**.
+To take it a step further, we note that using JWTs might be a good alternative but the responsibility of securing, that is authenticating and authorizing access to the api is still in the hands of the application. The ultimate goal is to delegate this responsibility to a seperate application so that they will be independent and any changes on either of them won't have major effects on the other. With this in mind, we turn our attention to what is called a **Secure Token Service** or **STS**.
 
 A **secure token service** or **STS** is a dedicated application that handles all the token authentication and authorization features, and is a seperate application in itself.
 
@@ -831,9 +831,15 @@ Before moving on, let's define the following terms first.
 <code>Identity Resource</code> contains indentity information and is protected by the secure token service, these contains user and profile information, claims, roles, and other details that is related to identity.
 <code>Api Resource</code> contains data that are exposed by a (web) api and is also protected by the secure token service.
 
-The way this works is that when a request for a protected resource is made by the user (resource owner), instead of the client application (or client) handling the authentication, this responsibility will be delegated to a secure token service instead, in this case were using IdentityServer version 4 which is a widely used secure token service and is maintained by Microsoft. It implements the **OpenIDConnect** standard for authentication which means that it also implements the **OAuth2** standard for authorization.
+The way this works is that when a request for a protected resource is made by the user (resource owner), instead of the client application (or client) handling the authentication, this responsibility will be delegated to a secure token service instead, in this case were using **IdentityServer version 4** which is a widely used secure token service and is maintained by Microsoft. It implements the **OpenIDConnect** standard for authentication which means that it also implements the **OAuth2** standard for authorization.
 
 ![Using Security Token Service](https://github.com/JudeAlquiza/ContosoRetailApplication/blob/master/Research/Security/2.4.1.JPG) 
+
+We'll start with an Angular2 client application, an ASP.NET Core Web API application, and a Security Token Service, in this case we'll be using Identity Server version 4 as stated above. Note that I have a sample ASP.NET Core Web Application that uses the IndentityServer APIs in my github repo [here](https://github.com/JudeAlquiza/ContosoRetailApplication/tree/master/SecureTokenService_IdentityServer/SecureTokenService_IdentityServer) that you can use.
+
+The way this works is that the user will have to access some resource in a web api that is secured. The user will access this via an Angular2 client application. 
+
+The user will have to navigate to the client application, and will be presented a home page for example. When the user tries to navigate to a location in the client app where a secured resource needs to be retrieve from the web api, the web api will detect that resource needs an authenticated and authorized user, which will then redirect the request to the secure token service. 
 
 This secure token service then redirects the client application to a login page where the user enters his/her credentials. These credentials will be sent to the secure token service for authentication. 
 
@@ -848,3 +854,57 @@ The secure token service issues two tokens, one is the identity token that is us
 These two tokens must be attached to request being made depending on what resource the client wants to access in behalf of the user. 
 
 When everything is done, we will be able to access the resources that we need.
+
+#### 2.4.1 Claims Based Authorization using a Secure Token Service
+
+In our Secure Token Service solution, open <code>Startup.cs</code> and inside of the <code>ConfigureServices()</code> method, you should have something like this.
+
+   ``` C#
+     public void ConfigureServices(IServiceCollection services)
+     {
+        // Add framework services.
+        services.AddMvc();
+
+        services.AddIdentityServer()
+                .AddTemporarySigningCredential()
+                .AddInMemoryApiResources(Config.GetApiResources())
+                .AddInMemoryClients(Config.GetClients());
+     }
+   ```
+
+Now open <code>Config.cs</code> and inside of the <code>GetApiResources()</code> method, you should have something like this.
+
+   ``` C#
+     public static IEnumerable<ApiResource> GetApiResources()
+     {
+        return new List<ApiResource>
+        {
+            new ApiResource("contosoRetailAPI", "Contoso Retail Web API")
+        };
+     }
+   ```
+
+Let's modify this to include a set of claims just like what we did in section 2.3.3.
+
+   ``` C#
+     public static IEnumerable<ApiResource> GetApiResources()
+     {
+        return new List<ApiResource>
+        {
+            new ApiResource("contosoRetailAPI", "Contoso Retail Web API",
+                                new string[] 
+                                {
+                                    "SuperUser",
+                                    "Manager",
+                                    "Accounting",
+                                    "CanCreateBuilding",
+                                    "CanSeeBuildingList",
+                                    "CanSeeBuilding",
+                                    "CanUpdateBuilding",
+                                    "CanDeleteBuilding"
+                                })
+        };
+     }
+   ```
+
+With this modification, we can now do the same claims based authentication for ASP.NET Identity and JSON Web Tokens. This claims based authentication can facilitate both user and role based authentication as well.
