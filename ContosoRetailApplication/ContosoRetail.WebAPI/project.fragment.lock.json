@@ -13,6 +13,13 @@
         "../packages/System.Linq.Dynamic.1.0.7/lib/net40/System.Linq.Dynamic.dll": {},
         "../packages/System.ValueTuple.4.3.0/lib/netstandard1.0/System.ValueTuple.dll": {},
         "bin/Debug/BC_ContosoRecordsModule.Application.dll": {}
+      },
+      "contentFiles": {
+        "bin/Debug/BC_ContosoRecordsModule.Application.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
       }
     },
     "BC_ContosoRecordsModule.DependencyInjection/1.0.0": {
@@ -42,6 +49,13 @@
         "../packages/System.Security.Cryptography.X509Certificates.4.3.0/lib/net461/System.Security.Cryptography.X509Certificates.dll": {},
         "../packages/System.Xml.ReaderWriter.4.3.0/lib/net46/System.Xml.ReaderWriter.dll": {},
         "bin/Debug/BC_ContosoRecordsModule.DependencyInjection.dll": {}
+      },
+      "contentFiles": {
+        "bin/Debug/BC_ContosoRecordsModule.DependencyInjection.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
       }
     },
     "ContosoRetail.SharedKernel/1.0.0": {
@@ -52,6 +66,13 @@
       },
       "runtime": {
         "bin/Debug/ContosoRetail.SharedKernel.dll": {}
+      },
+      "contentFiles": {
+        "bin/Debug/ContosoRetail.SharedKernel.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
       }
     },
     "BC_ContosoRecordsModule.Core/1.0.0": {
@@ -62,6 +83,13 @@
       },
       "runtime": {
         "bin/Debug/BC_ContosoRecordsModule.Core.dll": {}
+      },
+      "contentFiles": {
+        "bin/Debug/BC_ContosoRecordsModule.Core.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
       }
     },
     "BC_ContosoRecordsModule.DataAccess/1.0.0": {
@@ -74,6 +102,13 @@
         "../packages/EntityFramework.6.1.3/lib/net45/EntityFramework.SqlServer.dll": {},
         "../packages/EntityFramework.6.1.3/lib/net45/EntityFramework.dll": {},
         "bin/Debug/BC_ContosoRecordsModule.DataAccess.dll": {}
+      },
+      "contentFiles": {
+        "bin/Debug/BC_ContosoRecordsModule.DataAccess.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
       }
     },
     "BC_ContosoRecordsModule.DataModel/1.0.0": {
@@ -86,6 +121,13 @@
         "../packages/EntityFramework.6.1.3/lib/net45/EntityFramework.SqlServer.dll": {},
         "../packages/EntityFramework.6.1.3/lib/net45/EntityFramework.dll": {},
         "bin/Debug/BC_ContosoRecordsModule.DataModel.dll": {}
+      },
+      "contentFiles": {
+        "bin/Debug/BC_ContosoRecordsModule.DataModel.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
       }
     }
   }
