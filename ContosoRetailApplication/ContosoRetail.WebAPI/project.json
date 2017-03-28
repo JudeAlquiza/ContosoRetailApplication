@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "AutoMapper": "6.0.0",
+    "AutoMapper": "6.0.2",
     "Microsoft.AspNetCore.Diagnostics": "1.1.1",
     "Microsoft.AspNetCore.Mvc": "1.1.2",
     "Microsoft.AspNetCore.Routing": "1.1.1",
@@ -12,7 +12,8 @@
     "Microsoft.Extensions.Logging": "1.1.1",
     "Microsoft.Extensions.Logging.Console": "1.1.1",
     "Microsoft.Extensions.Logging.Debug": "1.1.1",
-    "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.1"
+    "Microsoft.Extensions.Options.ConfigurationExtensions": "1.1.1",
+    "Newtonsoft.Json": "10.0.1"
   },
 
   "tools": {
