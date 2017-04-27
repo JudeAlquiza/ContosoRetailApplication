@@ -9,7 +9,8 @@ namespace BC_ContosoRecordsModule.DataModel.Configurations
     {
         public CustomerOrdersConfiguration()
         {
-            ToTable("dbo.V_CustomerOrders");
+            ToTable("dbo.CustomerOrdersTop300K");
+            //ToTable("dbo.V_CustomerOrders");
 
             HasKey(e => e.ProductCategoryName);
             HasKey(e => e.ProductSubcategory);

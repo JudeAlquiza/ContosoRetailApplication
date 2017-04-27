@@ -5,7 +5,6 @@ using ContosoRetail.WebAPI.MappingProfile;
 using ContosoRetail.WebAPI.ModelBinderProviders;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -22,6 +21,7 @@ namespace ContosoRetail.WebAPI
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
+            HibernatingRhinos.Profiler.Appender.EntityFramework.EntityFrameworkProfiler.Initialize();
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -45,7 +45,6 @@ namespace ContosoRetail.WebAPI
             services.AddMvc(
                 config =>
                 {
-                    //config.Filters.Add(new RequireHttpsAttribute());
                     config.ModelBinderProviders.Insert(0, new DataSourceLoadOptionsBinderProvider());
                 });
         }
@@ -58,6 +57,7 @@ namespace ContosoRetail.WebAPI
 
             app.UseCors(cfg => { cfg.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); });
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
+
             app.UseMvc();
         }
     }

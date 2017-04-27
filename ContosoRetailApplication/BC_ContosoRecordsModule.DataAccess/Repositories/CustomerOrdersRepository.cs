@@ -17,6 +17,10 @@ namespace BC_ContosoRecordsModule.DataAccess.Repositories
 
         public override IQueryable<CustomerOrders> GetAll()
         {
+            //var test = _ctx.CustomerOrders.Select("new (ProductCategoryName, ProductSubcategory, Product)");
+            //var genericToList = typeof(Enumerable).GetMethod("ToList").MakeGenericMethod(new Type[] { test.ElementType });
+            //var list = (IList)genericToList.Invoke(null, new[] { test });
+
             return _ctx.CustomerOrders;
         }
     }

@@ -22,89 +22,85 @@ export class BC_ContosoRetailComponent {
     constructor(private _router: Router, http: Http) {
         this.customerOrders = new CustomStore({
             load: function (loadOptions: any) {
-                var d = $.Deferred();
-                
-                var params: string = '';
-                
+                let d = $.Deferred();
+
+                let params: string = '';
+
                 // skip
-                if (loadOptions.skip){
+                if (loadOptions.skip) {
                     params += 'skip=' + loadOptions.skip;
-                }
-                else{
+                }else {
                     params += 'skip=0';
                 }
 
                 // take
-                if (loadOptions.take){
+                if (loadOptions.take) {
                     params += '&take=' + loadOptions.take;
-                }
-                else{
+                }else {
                     params += '&take=0';
                 }
 
                 // filter
-                if (loadOptions.filter){
+                if (loadOptions.filter) {
                     params += '&filter=' + JSON.stringify(loadOptions.filter);
                 }
 
                 // sort
-                if (loadOptions.sort){
+                if (loadOptions.sort) {
                     params += '&sort=' + JSON.stringify(loadOptions.sort);
                 }
 
                 // group
-                if (loadOptions.group){
+                if (loadOptions.group) {
                     params += '&group=' + JSON.stringify(loadOptions.group);
                 }
 
                 // requireTotalCount
-                if (loadOptions.requireTotalCount){
+                if (loadOptions.requireTotalCount) {
                     params += '&requireTotalCount=' + loadOptions.requireTotalCount;
-                }
-                else{
+                }else {
                     params += '&requireTotalCount=false';
                 }
 
                 // requireGroupCount
-                if (loadOptions.requireGroupCount){
+                if (loadOptions.requireGroupCount)  {
                     params += '&requireGroupCount=' + loadOptions.requireGroupCount;
-                }
-                else{
+                }else {
                     params += '&requireGroupCount=false';
                 }
 
                 // searchExpr
-                if (loadOptions.searchExpr){
+                if (loadOptions.searchExpr) {
                     params += '&searchExpr=' + loadOptions.searchExpr;
                 }
 
                 // searchOperation
-                if (loadOptions.searchOperation){
+                if (loadOptions.searchOperation) {
                     params += '&searchOperation=' + loadOptions.searchOperation;
                 }
 
                 // searchValue
-                if (loadOptions.searchValue){
+                if (loadOptions.searchValue) {
                     params += '&searchValue=' + loadOptions.searchValue;
                 }
 
                 // totalSummary
-                if (loadOptions.totalSummary){
+                if (loadOptions.totalSummary) {
                     params += '&totalSummary=' + JSON.stringify(loadOptions.totalSummary);
                 }
 
                 http.get('http://localhost:54555/api/customerorders?' + params)
                     .toPromise()
                     .then(response => {
-                        var json = response.json();
+                        let json = response.json();
                         console.log(json);
-                        d.resolve(json.data, {                            
+                        d.resolve(json.data, {
                             totalCount: json.totalCount,
                             groupCount: json.groupCount,
                             summary: [ json.totalCount, json.totalAmount ]
                             });
                     })
-                    .catch(error => { d.reject('Data Loading Error') });
+                    .catch(error => { d.reject('Data Loading Error'); });
                     return d.promise();
             }
         });
