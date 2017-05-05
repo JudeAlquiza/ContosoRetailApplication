@@ -12,16 +12,18 @@ namespace BC_ContosoRecordsModule.DataModel.Configurations
             ToTable("dbo.CustomerOrdersTop300K");
             //ToTable("dbo.V_CustomerOrders");
 
-            HasKey(e => e.ProductCategoryName);
-            HasKey(e => e.ProductSubcategory);
-            HasKey(e => e.CustomerKey);
-            HasKey(e => e.IncomeGroup);
-            HasKey(e => e.CalendarYear);
-            HasKey(e => e.FiscalYear);
-            HasKey(e => e.Month);
-            HasKey(e => e.OrderNumber);
-            HasKey(e => e.Quantity);
-            HasKey(e => e.Amount);
+            HasKey(e => new {
+                e.ProductCategoryName,
+                e.ProductSubcategory,
+                e.CustomerKey,
+                e.IncomeGroup,
+                e.CalendarYear,
+                e.FiscalYear,
+                e.Month,
+                e.OrderNumber,
+                e.Quantity,
+                e.Amount
+            });
 
             Property(e => e.ProductCategoryName)
                 .HasColumnOrder(0)

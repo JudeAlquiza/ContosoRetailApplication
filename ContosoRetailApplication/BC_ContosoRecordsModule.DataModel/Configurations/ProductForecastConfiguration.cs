@@ -10,8 +10,10 @@ namespace BC_ContosoRecordsModule.DataModel.Configurations
         {
             ToTable("dbo.V_ProductForecast");
 
-            HasKey(e => e.CalendarMonth);
-            HasKey(e => e.ProductCategoryName);
+            HasKey(e => new {
+                e.CalendarMonth,
+                e.ProductCategoryName
+            });
 
             Property(e => e.CalendarMonth)
                 .HasColumnOrder(0)

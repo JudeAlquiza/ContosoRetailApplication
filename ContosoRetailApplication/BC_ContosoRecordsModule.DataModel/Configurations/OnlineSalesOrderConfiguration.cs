@@ -11,9 +11,11 @@ namespace BC_ContosoRecordsModule.DataModel.Configurations
         {
             ToTable("dbo.V_OnlineSalesOrder");
 
-            HasKey(e => e.OrderNumber);
-            HasKey(e => e.CustomerKey);
-            HasKey(e => e.IncomeGroup);
+            HasKey(e => new{
+                e.OrderNumber,
+                e.CustomerKey,
+                e.IncomeGroup
+            });
 
             Property(e => e.OrderNumber)
                 .HasColumnOrder(0)

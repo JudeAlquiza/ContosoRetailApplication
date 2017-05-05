@@ -11,9 +11,11 @@ namespace BC_ContosoRecordsModule.DataModel.Configurations
         {
             ToTable("dbo.V_CustomerPromotion");
 
-            HasKey(e => e.CustomerKey);
-            HasKey(e => e.ProductKey);
-            HasKey(e => e.PromotionKey);
+            HasKey(e => new {
+                e.CustomerKey,
+                e.ProductKey,
+                e.PromotionKey
+            });
 
             Property(e => e.CustomerKey)
                 .HasColumnOrder(0)
